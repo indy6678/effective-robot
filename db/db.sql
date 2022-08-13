@@ -1,0 +1,4 @@
+DROP DATABASE IF EXISTS roster;
+CREATE DATABASE roster;
+USE roster;
+

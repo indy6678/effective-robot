@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const express = require("express");
+const { application } = require("express");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -26,11 +27,10 @@ const db = mysql.createConnection(
   console.log("Now connected to the roster database.")
 );
 
-// route to show all departments
+// route to show current departments
 app.get("/api/departments", (req, res) => {
   const sql = `SELECT * FROM department`;
 
-  // database query to show all columns in department table
   db.query(sql, (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -89,6 +89,60 @@ app.get("/api/department/:id", (req, res) => {
     res.json({
       message: "success",
       data: row,
+    });
+  });
+});
+
+// route to add a department
+app.post('/api/department', ({body}, res) => {
+    const sql = `INSERT INTO department (name)
+    VALUES(?)`;
+    const params = [body.name];
+
+    db.query(sql, params, (err, result) => {
+        if(err) {
+            res.status(400).json({error: err.message});
+            return;
+        }
+        res.json({
+            message: 'success',
+            data: body
+        });
+    });
+});
+
+// route to add an employee
+app.post('api/employee', ({body}, res) => {
+    const sql = `INSERT INTO employee (first_name, last_name, role, manager)
+    VALUES(?,?,?,?)`;
+    const params = [body.first_name, body.last_name, body.role, body.manager];
+
+    db.query(sql, params, (err, results) => {
+      if (err) {
+        res.status(400).json({error: err.message});
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: body
+      });
+    });
+});
+
+// route to add a role
+app.post('api/role', ({body}, res) => {
+  const sql = `INSERT INTO role (name, name, department)
+  VALUES(?,?,?)`;
+  const params = [body.name, body.salary, body.department];
+
+  db.query(sql, params, (err, results) => {
+    if (err) {
+      res.status(400).json({error: err.message});
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: body
     });
   });
 });

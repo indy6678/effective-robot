@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const express = require("express");
-const { application } = require("express");
+const { application, response } = require("express");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -41,7 +41,7 @@ app.get("/api/departments", (req, res) => {
       message: "success",
       data: rows,
     });
-    console.log(rows);
+    console.table(rows);
   });
 });
 
@@ -58,6 +58,7 @@ app.get('/api/employees', (req, res) => {
       message: 'success',
       data: rows
     });
+    console.table(rows)
   });
 });
 
@@ -73,6 +74,7 @@ app.get('/api/roles', (req, res) => {
       message: 'success',
       data: rows
     });
+    console.table(rows)
   });
 });
 
@@ -90,6 +92,7 @@ app.get("/api/department/:id", (req, res) => {
       message: "success",
       data: row,
     });
+    console.table(row)
   });
 });
 

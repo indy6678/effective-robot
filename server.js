@@ -1,4 +1,4 @@
-const mysql = require("mysql2");
+const db = require('./db/connection');
 const express = require("express");
 const { application, response } = require("express");
 
@@ -15,17 +15,6 @@ app.use(express.json());
 //         message: 'Hello world!'
 //     })
 // });
-
-// connect to the database
-const db = mysql.createConnection(
-  {
-    host: "localhost",
-    user: "root",
-    password: "r]wuM.~w7LhsW>bJ",
-    database: "roster",
-  },
-  console.log("Now connected to the roster database.")
-);
 
 // route to show current departments
 app.get("/api/departments", (req, res) => {

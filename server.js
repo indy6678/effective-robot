@@ -220,6 +220,28 @@ app.delete('/api/employee/:id', (req, res) => {
   });
 });
 
+// update employee
+app.put('/api/employee/:id', (req, res) => {
+  const sql = `UPDATE employee SET first_name = ?
+              WHERE id = ?`;
+  const params = [req.body.first_name, req.params.id];
+  db.query(sql, params, (err, result) => {
+    if(err) {
+      res.status(400).json({error: err.message});
+    } else if(!result.affectedRows) {
+      res.json({
+        message: 'Employee not found'
+      })
+    } else {
+      res.json({
+        message: 'Success',
+        data: req.body,
+        changes: result.affectedRows
+      })
+    }
+  })
+})
+
 // response used for requests not accounted for; keep last
 app.use((req, res) => {
   res.status(404).end();

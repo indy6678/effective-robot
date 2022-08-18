@@ -45,9 +45,30 @@ app.get("/api/departments", (req, res) => {
   });
 });
 
+// // route to show current employees
+// app.get('/api/employees', (req, res) => {
+//   const sql = `SELECT * FROM employee`;
+
+//   db.query(sql, (err, rows) => {
+//     if(err) {
+//       res.status(500).json({error: err.message});
+//       return;
+//     }
+//     res.json({
+//       message: 'success',
+//       data: rows
+//     });
+//     console.table(rows)
+//   });
+// });
+
 // route to show current employees
 app.get('/api/employees', (req, res) => {
-  const sql = `SELECT * FROM employee`;
+  const sql = `SELECT employee.first_name, employee.last_name, employee.first_name
+                AS manager
+                FROM employee
+                LEFT JOIN role
+                ON employee.manager_id = employee.id`;
 
   db.query(sql, (err, rows) => {
     if(err) {
@@ -64,7 +85,11 @@ app.get('/api/employees', (req, res) => {
 
 // route to show current roles
 app.get('/api/roles', (req, res) => {
-  const sql = `SELECT * FROM role`;
+  const sql = `SELECT role.*, department.name
+               AS department
+               FROM role
+               LEFT JOIN department
+               ON role.department_id = department.id`;
 
   db.query(sql, (err, rows) => {
     if(err) {
@@ -150,13 +175,30 @@ app.post('api/role', ({body}, res) => {
   });
 });
 
-// database query to delete a single row, hard-coded as 1
-// db.query(`DELETE FROM department WHERE id = ?`, 1, (err, result) => {
-//     if(err) {
-//         console.log(err);
-//     }
-//     console.log(result);
-// });
+// database query to delete a single row
+app.delete('/api/department/:id', (req, res) => {
+  const sql = `DELETE FROM department WHERE id = ?`;
+  const params = req.params.id;
+  db.query(sql, params, (err, row) => {
+    if(err) {
+        console.log(err);
+        res.status(400).json({error: err.message});
+        return;
+    } else if (!result.affectedRows) {
+      // if the department was not found
+      res.json({
+        message: "Department not found"
+      });
+    } else {
+      res.json({
+        message: 'Deleted', // confirmation message of a successful deletion
+        changes: result.affectedRows, // shows how many rows were affected
+        id: req.params.id // shows the id of the affected row
+      })
+    }
+    console.log(result);
+});
+})
 
 // route to add
 // app.post()
